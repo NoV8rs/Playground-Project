@@ -17,6 +17,12 @@ Shader "Custom/GridShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.0
+
+            float4 _MainColor;
+            float4 _LineColor;
+            float _LineWidth;
+            float _GridScale;
 
             struct appdata
             {
@@ -30,11 +36,6 @@ Shader "Custom/GridShader"
                 float4 vertex : SV_POSITION;
             };
 
-            float4 _MainColor;
-            float4 _LineColor;
-            float _LineWidth;
-            float _GridScale;
-
             v2f vert(appdata v)
             {
                 v2f o;
@@ -46,16 +47,24 @@ Shader "Custom/GridShader"
             fixed4 frag(v2f i) : SV_Target
             {
                 float2 grid = frac(i.uv);
-
-                float xLine = grid.x < _LineWidth || grid.x > (1.0 - _LineWidth) ? 1.0 : 0.0;
-                float yLine = grid.y < _LineWidth || grid.y > (1.0 - _LineWidth) ? 1.0 : 0.0;
-
-                float gridLine = max(xLine, yLine);
+                float xLine = step(grid.x, _LineWidth) + step(1.0 - grid.x, _LineWidth);
+                float yLine = step(grid.y, _LineWidth) + step(1.0 - grid.y, _LineWidth);
+                float gridLine = saturate(xLine + yLine);
                 return lerp(_MainColor, _LineColor, gridLine);
             }
             ENDCG
         }
     }
+    Fallback "Diffuse"
 }
+
+
+
+
+
+
+
+
+
 
 

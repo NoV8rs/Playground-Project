@@ -4,50 +4,73 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody _playerRb;
+    private Rigidbody rb;
+    private GameObject playerPrefab;
+    
+    [Header("Movement")]
+    [SerializeField] [Range(1,10)] private float moveSpeed = 5f;
+    [SerializeField] [Range(1,10)] private float mouseSensitivity = 1f;
+    [SerializeField] private float jumpForce = 5f;
+    private float moveInput;
     private bool isGrounded;
-    public float speed;
-    public float jumpForce;
+    private bool isJumping;
     
-    // Start is called before the first frame update
-    void Start()
+    [Header("Ground Check")]
+    //[SerializeField] private Transform groundCheck;
+    
+    [Header("Jump")]
+    [SerializeField] private LayerMask groundLayer;
+    
+    [Header("Camera")]
+    [SerializeField] private Transform playerCamera;
+    private float xRotation = 0f;
+    private float yRotation = 0f;
+    
+    private void Start()
     {
-        _playerRb = GetComponent<Rigidbody>();
-        isGrounded = true;
+        rb = GetComponent<Rigidbody>();
+        playerPrefab = GameObject.Find("Player");
+        Cursor.lockState = CursorLockMode.Locked;
     }
+    
+    private void FixedUpdate()
+    {
+        Move();
+        Jump();
+    }
+    
+    private void Update()
+    {
+        Rotate();
+    }
+    
+    private void Move()
+    {
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        PlayerMovement();
-        MouseMovement();
-        PlayerJump();
-    }
-
-    private void PlayerMovement()
-    {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        
-        Vector3 move = new Vector3(horizontalInput, 0, verticalInput);
-        _playerRb.AddForce(move * speed);
+        Vector3 move = transform.right * moveHorizontal + transform.forward * moveVertical;
+        rb.velocity = new Vector3(move.x * moveSpeed, rb.velocity.y, move.z * moveSpeed).normalized;
     }
     
-    private void MouseMovement()
+    private void Jump()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-        
-        transform.Rotate(Vector3.up, mouseX);
-        transform.Rotate(Vector3.right, mouseY);
-    }
-    
-    private void PlayerJump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            _playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
+    }
+    
+    private void Rotate()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        playerPrefab.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        
+        yRotation += mouseX;
+        playerPrefab.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
     }
 }

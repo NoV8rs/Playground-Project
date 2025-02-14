@@ -19,6 +19,9 @@ Shader "Custom/GridShader"
             #pragma fragment frag
             #pragma target 3.0
 
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+
             float4 _MainColor;
             float4 _LineColor;
             float _LineWidth;
@@ -27,6 +30,7 @@ Shader "Custom/GridShader"
             struct appdata
             {
                 float4 vertex : POSITION;
+                float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
@@ -34,6 +38,7 @@ Shader "Custom/GridShader"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float3 normal : TEXCOORD1;
             };
 
             v2f vert(appdata v)
@@ -41,6 +46,7 @@ Shader "Custom/GridShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv * _GridScale;
+                o.normal = UnityObjectToWorldNormal(v.normal);
                 return o;
             }
 
@@ -50,7 +56,15 @@ Shader "Custom/GridShader"
                 float xLine = step(grid.x, _LineWidth) + step(1.0 - grid.x, _LineWidth);
                 float yLine = step(grid.y, _LineWidth) + step(1.0 - grid.y, _LineWidth);
                 float gridLine = saturate(xLine + yLine);
-                return lerp(_MainColor, _LineColor, gridLine);
+
+                fixed4 color = lerp(_MainColor, _LineColor, gridLine);
+
+                // Apply lighting
+                fixed3 normal = normalize(i.normal);
+                fixed3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
+                fixed3 diffuse = _LightColor0.rgb * max(0, dot(normal, lightDir));
+
+                return color * fixed4(diffuse, 1.0);
             }
             ENDCG
         }

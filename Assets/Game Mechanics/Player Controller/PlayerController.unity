@@ -288,8 +288,13 @@ MonoBehaviour:
   moveSpeed: 5
   jumpForce: 5
   gravity: -9.81
+  canDoubleJump: 1
   cameraTransform: {fileID: 542205478}
   mouseSensitivity: 2
+  headBobbing: 0
+  headBobbingSpeed: 1
+  headBobbingAmount: 0.1
+  returnSpeed: 5
 --- !u!143 &1106315606
 CharacterController:
   m_ObjectHideFlags: 0

@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.84f;
     private bool doubleJump = false; // If double jump can activate
     public bool canDoubleJump = false; // Double Jump is enabled
+    public float doubleJumpForce = 5f; // Force of double jump
+    public float doubleJumpGravity = -9.84f; // Gravity of double jump
     
     [Header("Camera Settings")]
     public Transform cameraTransform;
@@ -27,9 +29,11 @@ public class PlayerController : MonoBehaviour
     public float headBobbingAmount = 0.05f;
     public float returnSpeed = 5f; // Speed of returning to original position
     
+    
+    
     private Vector3 originalCameraPosition;
 
-    void Start()
+    private void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -38,7 +42,7 @@ public class PlayerController : MonoBehaviour
         originalCameraPosition = cameraTransform.localPosition;
     }
 
-    void Update()
+    private void Update()
     {
         HandleMovement();
         HandleMouseLook();
@@ -60,22 +64,23 @@ public class PlayerController : MonoBehaviour
         _inputActions.Player.Jump.performed -= Jump;
         _inputActions.Player.Disable();
     }
-    
-    void Jump(InputAction.CallbackContext context)
+
+    private void Jump(InputAction.CallbackContext context)
     {
-        if (controller.isGrounded)
+        if (controller.isGrounded) // Check if grounded
         {
-            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
-            doubleJump = false;
+            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity); // Apply jump
+            doubleJump = false; // Reset double jump, if enabled
         }
-        else if (canDoubleJump && !doubleJump)
+        else if (canDoubleJump && !doubleJump) // Check if double jump is enabled and not already used
         {
-            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
-            doubleJump = true;
+            gravity = doubleJumpGravity; // Apply double jump gravity
+            velocity.y = Mathf.Sqrt(doubleJumpForce * -2f * gravity); // Apply double jump
+            doubleJump = true; // Set double jump to true
         }
     }
 
-    void HandleMovement()
+    private void HandleMovement()
     {
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
@@ -86,13 +91,14 @@ public class PlayerController : MonoBehaviour
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f; // Reset gravity when grounded
+            gravity = -9.84f; // Reset gravity when grounded
         }
         
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
 
-    void HandleMouseLook()
+    private void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -103,8 +109,8 @@ public class PlayerController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
-    
-    void HeadBobbing() // Can be optimized
+
+    private void HeadBobbing() // Can be optimized
     {
         if (!headBobbing) return; // Skip if head bobbing is disabled
 
@@ -128,6 +134,8 @@ public class PlayerController : MonoBehaviour
             cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, originalCameraPosition, Time.deltaTime * returnSpeed);
         }
     }
+    
+    
 }
 
 

@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float sprintSpeed = 10f;
+    private float resetMoveSpeed;
     public float jumpForce = 5f;
     public float gravity = -9.84f;
     private bool doubleJump = false; // If double jump can activate
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour
         
         // Store original camera position
         originalCameraPosition = cameraTransform.localPosition;
+        resetMoveSpeed = moveSpeed;
     }
 
     private void Update()
@@ -49,20 +52,20 @@ public class PlayerController : MonoBehaviour
         HeadBobbing();
     }
     
-    private void OnEnable()
+    private void OnEnable() // Enable input actions
     {
         if (_inputActions == null)
         {
-            _inputActions = new PlaygroundProject();
-            _inputActions.Player.Enable();
+            _inputActions = new PlaygroundProject(); // Create new input actions
+            _inputActions.Player.Enable(); // Enable player input
         }
-        _inputActions.Player.Jump.performed += Jump;
+        _inputActions.Player.Jump.performed += Jump; // Add jump event
     }
     
-    private void OnDisable()
+    private void OnDisable() // Disable input actions
     {
-        _inputActions.Player.Jump.performed -= Jump;
-        _inputActions.Player.Disable();
+        _inputActions.Player.Jump.performed -= Jump; // Remove jump event
+        _inputActions.Player.Disable(); 
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -96,21 +99,31 @@ public class PlayerController : MonoBehaviour
         
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-    }
-
-    private void HandleMouseLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        // Sprinting
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = sprintSpeed;
+        }
+        else
+        {
+            moveSpeed = resetMoveSpeed;
+        }
     }
 
-    private void HeadBobbing() // Can be optimized
+    private void HandleMouseLook() // Camera rotation
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity; // Get mouse input for X axis
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity; // Get mouse input for Y axis
+
+        xRotation -= mouseY; // Calculate rotation
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Clamp rotation
+        
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f); // Apply rotation to camera
+        transform.Rotate(Vector3.up * mouseX); // Rotate player
+    }
+
+    private void HeadBobbing() // Camera shake when moving
     {
         if (!headBobbing) return; // Skip if head bobbing is disabled
 

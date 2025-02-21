@@ -9,8 +9,10 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float sprintSpeed = 10f;
     private float resetMoveSpeed;
+    [Space(20)]
     public float jumpForce = 5f;
     public float gravity = -9.84f;
+    [Space(20)]
     private bool doubleJump = false; // If double jump can activate
     public bool canDoubleJump = false; // Double Jump is enabled
     public float doubleJumpForce = 5f; // Force of double jump
@@ -83,7 +85,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleMovement()
+    private void HandleMovement() // Player movement
     {
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");

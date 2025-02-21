@@ -286,11 +286,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  sprintSpeed: 10
   jumpForce: 5
   gravity: -9.81
   canDoubleJump: 1
   doubleJumpForce: 3
-  doubleJumpGravity: -18.24
+  doubleJumpGravity: -39.2
   cameraTransform: {fileID: 542205478}
   mouseSensitivity: 2
   headBobbing: 0

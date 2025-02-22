@@ -15,7 +15,7 @@ MonoBehaviour:
   gunType: 0
   gunName: Testing
   damage: 10
-  fireRate: 1.2
+  fireRate: 5
   ammoCapacity: 30
   reloadTime: 1.5
   currentFireMode: 1

@@ -7,8 +7,8 @@ public class GunSystem : MonoBehaviour
     public GunData weaponStats; // ScriptableObject containing gun stats
     public Transform muzzleTransform; // Transform where bullets are spawned
     
-    private int currentAmmo; 
-    private bool isReloading;
+    [SerializeField] private int currentAmmo; 
+    [SerializeField] private bool isReloading;
     private float lastShootTime;
     private bool wasTriggerPulled;
     
@@ -74,6 +74,7 @@ public class GunSystem : MonoBehaviour
 
     private IEnumerator ReloadCoroutine() // Coroutine for reloading
     {
+        Debug.Log("Reloading...");
         isReloading = true; // Prevent shooting while reloading
         yield return new WaitForSeconds(weaponStats.reloadTime); // Wait for reload time
         currentAmmo = weaponStats.ammoCapacity; // Refill ammo

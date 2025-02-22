@@ -119,8 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69fc06cba89bbce4f91c15f2a17900aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 2
-  speed: 20
+  damage: 0
+  speed: 100
   lifeTime: 5
 --- !u!54 &-6141565737755690235
 Rigidbody:
@@ -130,9 +130,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4989540954527691664}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.01
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}

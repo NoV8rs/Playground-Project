@@ -60,12 +60,6 @@ public class PlayerController : MonoBehaviour
         
         bool triggerPressed = Input.GetButton("Fire1"); // For automatic fire
         gunSystem.UpdateFiring(triggerPressed);
-        
-        if (Input.GetButtonDown("Reload"))
-        {
-            gunSystem.Reload();
-        }
-        
     }
     
     private void OnEnable() // Enable input actions
@@ -76,12 +70,15 @@ public class PlayerController : MonoBehaviour
             _inputActions.Player.Enable(); // Enable player input
         }
         _inputActions.Player.Jump.performed += Jump; // Add jump event
+        _inputActions.Player.Reload.performed += context => gunSystem.Reload(); // Add reload event
     }
     
     private void OnDisable() // Disable input actions
     {
+        if (_inputActions == null) return;
         _inputActions.Player.Jump.performed -= Jump; // Remove jump event
-        _inputActions.Player.Disable(); 
+        _inputActions.Player.Reload.performed -= context => gunSystem.Reload(); // Remove reload event
+        _inputActions.Player.Disable();
     }
 
     private void Jump(InputAction.CallbackContext context)

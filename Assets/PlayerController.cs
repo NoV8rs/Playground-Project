@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    PlaygroundProject _inputActions;
+    private PlaygroundProject _inputActions;
     
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
     public float headBobbingAmount = 0.05f;
     public float returnSpeed = 5f; // Speed of returning to original position
     
+    [Header("Guns")]
+    public GunSystem gunSystem;
+    
     
     
     private Vector3 originalCameraPosition;
@@ -52,6 +55,17 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleMouseLook();
         HeadBobbing();
+        
+        if (gunSystem == null) return;
+        
+        bool triggerPressed = Input.GetButton("Fire1"); // For automatic fire
+        gunSystem.UpdateFiring(triggerPressed);
+        
+        if (Input.GetButtonDown("Reload"))
+        {
+            gunSystem.Reload();
+        }
+        
     }
     
     private void OnEnable() // Enable input actions
@@ -149,8 +163,6 @@ public class PlayerController : MonoBehaviour
             cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, originalCameraPosition, Time.deltaTime * returnSpeed);
         }
     }
-    
-    
 }
 
 

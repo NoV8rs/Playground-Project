@@ -56,7 +56,7 @@ public class GunSystem : MonoBehaviour
         if (bulletScript != null)
         {
             bulletScript.damage = weaponStats.damage;
-            // Optionally set bullet speed, direction, etc.
+            // Optionally set bullet speed, direction, etc. // COME BACK TO THIS
         }
 
         currentAmmo--;

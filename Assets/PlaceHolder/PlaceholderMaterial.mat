@@ -73,7 +73,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GridScale: 2
+    - _GridScale: 10
     - _GridSize: 1
     - _LineWidth: 0.01
     - _Metallic: 0

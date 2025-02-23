@@ -21,6 +21,7 @@ public class GunData : ScriptableObject
     
     public GunType gunType; // Set the gun type, using the enum here to change it in the inspector
     public string gunName; // Set the gun name
+    public int gunLevel; // Set the gun level
     public int damage;
     public float fireRate;
     public int ammoCapacity;

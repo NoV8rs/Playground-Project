@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunType: 0
   gunName: Testing
+  gunLevel: 3
   damage: 10
   fireRate: 5
   ammoCapacity: 30

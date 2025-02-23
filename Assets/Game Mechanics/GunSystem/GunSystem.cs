@@ -9,13 +9,30 @@ public class GunSystem : MonoBehaviour
     
     [SerializeField] private int currentAmmo; 
     [SerializeField] private bool isReloading;
+    public int gunLevel = 1;
+    public int damage;
+    public float fireRate;
+    public float reloadTime;
     private float lastShootTime;
     private bool wasTriggerPulled;
     
     // Start is called before the first frame update
     void Start()
     {
+        damage = weaponStats.damage;
+        fireRate = weaponStats.fireRate;
+        reloadTime = weaponStats.reloadTime;
         currentAmmo = weaponStats.ammoCapacity;
+        gunLevel = weaponStats.gunLevel;
+        GunScaling();
+    }
+    
+    private void GunScaling()
+    {
+        int currentGunLevel = gunLevel;
+        damage = (int)(damage * Mathf.Pow(1.13f, currentGunLevel));
+        fireRate += currentGunLevel * 0.1f;
+        reloadTime -= currentGunLevel * 0.1f;
     }
 
     public void UpdateFiring(bool triggerPressed) 
@@ -36,7 +53,7 @@ public class GunSystem : MonoBehaviour
         else if (weaponStats.currentFireMode == GunData.FireMode.Automatic)
         {
             // Shoot continuously while trigger is held, respecting fire rate
-            if (triggerPressed && Time.time >= lastShootTime + 1f / weaponStats.fireRate)
+            if (triggerPressed && Time.time >= lastShootTime + 1f / fireRate)
             {
                 Shoot();
             }
@@ -55,7 +72,7 @@ public class GunSystem : MonoBehaviour
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         if (bulletScript != null)
         {
-            bulletScript.damage = weaponStats.damage;
+            bulletScript.damage = damage; // Set bullet damage
             // Optionally set bullet speed, direction, etc. // COME BACK TO THIS
         }
 
@@ -76,7 +93,7 @@ public class GunSystem : MonoBehaviour
     {
         Debug.Log("Reloading...");
         isReloading = true; // Prevent shooting while reloading
-        yield return new WaitForSeconds(weaponStats.reloadTime); // Wait for reload time
+        yield return new WaitForSeconds(reloadTime); // Wait for reload time
         currentAmmo = weaponStats.ammoCapacity; // Refill ammo
         isReloading = false; // Allow shooting again
     }

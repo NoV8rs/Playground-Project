@@ -35,6 +35,11 @@ public class Bullet : MonoBehaviour
             collision.gameObject.GetComponent<EnemyManager>().EnemyTakeDamage((int)damage);
             Destroy(gameObject);
         }
+
+        if (collision.gameObject)
+        {
+            Destroy(gameObject);
+        }
         
         Debug.Log("Bullet hit: " + collision.gameObject.name);
         Debug.Log("Gun deals: " + damage + " damage");

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be7f4dddc3023545a049c98e8b4bd24, type: 3}
   m_Name: Testing
   m_EditorClassIdentifier: 
-  gunType: 0
+  gunType: 1
   gunName: Testing
   gunLevel: 3
   damage: 10
